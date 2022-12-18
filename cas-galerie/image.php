@@ -78,6 +78,9 @@
 
             }
             // permet d'ajouter le copyright et le logo
+            if(isset($image)){
+                echo "empty";
+            }
             traiterImage($image, $nomFichier);
 
 
