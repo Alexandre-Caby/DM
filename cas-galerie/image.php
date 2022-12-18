@@ -26,7 +26,9 @@
             else{
                 imagettftext($image, $height / 50, 0, $width /1.55, $height - 10, imagecolorallocate($image, 255, 255, 255), "./Herborn.ttf",$date[0]["FileDateTime"]);
             }
-
+    /**
+     *  Le problème des miniatures qui ne s'affichent pas vient de imagettftext($image,) en gros la ressource est indéfinie 
+     */
         }else{
             $date = recup_date_exif($nomFichier[2]);
             $textcolor = imagecolorallocate($image, 0, 0, 255);
@@ -51,9 +53,8 @@
         $extension = strtolower(pathinfo($fichier, PATHINFO_EXTENSION));
         $valide = array('png', 'gif', 'jpeg');
         $nomFichier = explode("/", $fichier);
-        //print_r($nomFichier);
 
-        header("Content-type: image/$extension");
+        //header("Content-type: image/$extension");
 
         if (in_array($extension, $valide))
         { 
@@ -78,6 +79,7 @@
             }
             // permet d'ajouter le copyright et le logo
             traiterImage($image, $nomFichier);
+
 
             switch($extension){
 

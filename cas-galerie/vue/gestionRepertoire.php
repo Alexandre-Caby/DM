@@ -99,9 +99,10 @@ if (isset($_REQUEST["nomRep"]))  $nomRep = $_REQUEST["nomRep"];
 					}
 
 					$src = "image.php?lien=galerie/$nomRep/$fichier";
-					$srcThumb = "image.php?lien=galerie/$nomRep/thumbs/crow.png";
+					$srcThumb = "image.php?lien=galerie/$nomRep/thumbs/$fichier";
 
-					echo "<a target=\"_blank\" href=\"$src\" class='img-fluid'><img src=\"$srcThumb\"/></a>\n";
+					echo "<a target=\"_blank\" href=\"$srcThumb\" class='img-fluid'><img src=\"$srcThumb\"/></a>\n";
+
 
 
 					echo "<div>$fichier - $verif \n";			
