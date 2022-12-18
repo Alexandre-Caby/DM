@@ -9,25 +9,12 @@
 <body>
 <br>
 <?php
-//session_start();
+    if(isset($_GET["erreur"])){
+        echo $_GET["erreur"];
+    }
+?>
 
-// -----------------------------------------------
-// check
-// -----------------------------------------------
-
-if(isset($_GET["erreur"])){
-    echo $_GET["erreur"];
-}
-
-// if(!isset($_SESSION["id"])){
-//     include_once "vue/connexion.php";
-// }else {
-//     ?>
- <!--   <a href="controleur.php?action=Logout"> <button class="btn btn-outline-danger">Se Deconnecter</button></a>
-    <br> -->
-    <?php 
-// }
-
-include_once "vue/gestionRepertoire.php";
+<?php 
+    include_once "vue/gestionRepertoire.php";
 ?>
 </body>

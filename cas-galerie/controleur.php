@@ -1,25 +1,11 @@
 <?php
-
-//session_start();
 include_once("libs/Utils.php");
 include_once("libs/Securisation.php");
 include_once("modele/modele.php");
 
-// $whitelist = array(
-//     "index.php","vue/connexion.php","vue/gestionRepertoire.php");
-
-
-// if (in_array(basename($_SERVER["PHP_SELF"]),$whitelist)){
-//     rediriger("index.php");
-//     die("");
-// }
 
 $action = $_REQUEST["action"];
 echo $action;
-
-// if(!isset($action)){
-// 	rediriger("index.php");
-// }
 
 switch($action)
 	{
