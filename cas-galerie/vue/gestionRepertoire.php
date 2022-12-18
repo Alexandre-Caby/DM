@@ -1,8 +1,7 @@
 <?php
 
-// -----------------------------------------------
-// check
-// -----------------------------------------------
+include_once("modele/modele.php");
+
 
 if (isset($_REQUEST["nomRep"]))  $nomRep = $_REQUEST["nomRep"];
  else $nomRep = false;
@@ -94,6 +93,10 @@ if (isset($_REQUEST["nomRep"]))  $nomRep = $_REQUEST["nomRep"];
 					$src = "";
 					$srcThumb = "";
 					
+					$verif = appartient2($fichier);
+					if(empty($verif)){
+						$verif = recup_date_string($fichier);
+					}
 
 					$src = "image.php?lien=galerie/$nomRep/$fichier";
 					$srcThumb = "image.php?lien=galerie/$nomRep/thumbs/crow.png";
@@ -101,7 +104,7 @@ if (isset($_REQUEST["nomRep"]))  $nomRep = $_REQUEST["nomRep"];
 					echo "<a target=\"_blank\" href=\"$src\" class='img-fluid'><img src=\"$srcThumb\"/></a>\n";
 
 
-					echo "<div>$fichier \n";			
+					echo "<div>$fichier - $verif \n";			
 					echo "<a href=\"controleur.php?nomRep=$nomRep&fichier=$fichier&action=Supprimer\" >Supp</a>\n";
 					echo "<br />($width * $height $type)\n";
 					echo "<br />\n";

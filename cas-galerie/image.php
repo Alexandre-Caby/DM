@@ -17,18 +17,25 @@
 		$width= $dataImg[0];
 		$height= $dataImg[1]; 
         $verif = appartient2($nomFichier[2]);
-        //if($verif == NULL){
+        if(empty($verif)){
             $date = recup_date($nomFichier[2]);
+            $textcolor = imagecolorallocate($image, 0, 0, 255);
+            if($width>$height){
+                imagettftext($image, $width / 50, 0, $width /1.4, $height - 10, imagecolorallocate($image, 255, 255, 255), "./Herborn.ttf",$date[0]["FileDateTime"]);
+            }
+            else{
+                imagettftext($image, $height / 50, 0, $width /1.55, $height - 10, imagecolorallocate($image, 255, 255, 255), "./Herborn.ttf",$date[0]["FileDateTime"]);
+            }
 
-        //}else{
-            //$date = date('d-m-y h:i:s', recup_date_exif($nomFichier[2]));
-        //}
-        $textcolor = imagecolorallocate($image, 0, 0, 255);
-        if($width>$height){
-            imagettftext($image, $width / 50, 0, $width /1.4, $height - 10, imagecolorallocate($image, 255, 255, 255), "./Herborn.ttf",$date[0]["FileDateTime"]);
-        }
-        else{
-            imagettftext($image, $height / 50, 0, $width /1.55, $height - 10, imagecolorallocate($image, 255, 255, 255), "./Herborn.ttf",$date[0]["FileDateTime"]);
+        }else{
+            $date = recup_date_exif($nomFichier[2]);
+            $textcolor = imagecolorallocate($image, 0, 0, 255);
+            if($width>$height){
+                imagettftext($image, $width / 50, 0, $width /1.4, $height - 10, imagecolorallocate($image, 255, 255, 255), "./Herborn.ttf",$date[0]["DateTimeOriginal"]);
+            }
+            else{
+                imagettftext($image, $height / 50, 0, $width /1.55, $height - 10, imagecolorallocate($image, 255, 255, 255), "./Herborn.ttf",$date[0]["DateTimeOriginal"]);
+            }
         }
     }
 

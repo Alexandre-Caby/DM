@@ -1,12 +1,5 @@
 <?php
 
-// -----------------------------------------------
-// check
-// -----------------------------------------------
-
-
-
-
 //session_start();
 include_once("libs/Utils.php");
 include_once("libs/Securisation.php");
@@ -57,7 +50,7 @@ switch($action)
 			{
 				$nomRep = $_GET["nomRep"];
 				$fichier = $_GET["fichier"];
-				
+				supprimer_bdd($fichier);
 				unlink("galerie/".$nomRep . "/" . $fichier);
 		
 				unlink("galerie/".$nomRep . "/thumbs/" . $fichier);	
@@ -113,8 +106,8 @@ switch($action)
 							meta_donnees($hash,$dateFile, $name);
 						}
 						else {
-							$dateFile2 = $hash["FILE"]["FileDateTime"];
-							$dateFile2 = date("d/m/y h:i:s", $dateFile2);
+							//$dateFile2 = $hash["FILE"]["FileDateTime"];
+							$dateFile2 = date("d/m/y h:i:s", time());
 							meta_donnees2($name, $dateFile2);
 						}
 					}

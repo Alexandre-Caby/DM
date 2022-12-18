@@ -15,6 +15,11 @@ function recup_date($name){
     return parcoursRs(SQLSelect($SQL));
 }
 
+function recup_date_string($name){
+    $SQL=("SELECT FileDateTime FROM Data_Exif WHERE Nom_image = '$name';");
+    return SQLGetChamp($SQL);
+}
+
 /**
  * Permet d'insérer dans la table Data_Exif les meta-donnees
  */
@@ -46,9 +51,20 @@ function appartient($name){
     return SQLSelect($SQL);
 }
 
+/**
+ * Vérifie si la date présente dans la base de donnée
+ */
 function appartient2($name){
     $SQL = "SELECT DateTimeOriginal FROM Data_Exif WHERE Nom_image = '$name'";
-    return SQLSelect($SQL);
+    return SQLGetChamp($SQL);
+}
+
+/**
+ * Supprime les métas-données dans la base de donnée
+ */
+function supprimer_bdd($name){
+    $SQL = "DELETE FROM Data_Exif WHERE Nom_image = '$name'";
+    return SQLDelete($SQL);
 }
 
 ?>
