@@ -2,47 +2,66 @@
     include_once("modele/modele.php");
     ob_start();
 
-    function coordonnees_copyright($image,$coordonnes){ // permet de mettre la localisation 
+    function geolocalisation_copyright($image,$nomFichier){ // permet de mettre la localisation 
         $dataImg = getimagesize($_GET["lien"]);  
 		$width= $dataImg[0];
 		$height= $dataImg[1]; 
-
-        global $coordonnes;
         $textcolor = imagecolorallocate($image, 0, 0, 255);
-        imagettftext($image, $width / 50, 0, $width, $height - 10, imagecolorallocate($image, 196, 196, 196), "./Herborn.ttf", $coordonnes);
+        $verif = appartient_geo($nomFichier);
+        if(!empty($verif)){
+            $coordonnes = recup_geo_pays($nomFichier);
+            //echo($coordonnes);
+            if($width>$height){
+                //imagestring($image, 0, $width, $height-10, $coordonnes, $textcolor);
+                imagettftext($image, $width / 25, 0, $width, $height - 10, $textcolor, "./Herborn.ttf", $coordonnes);
+            }
+            else{
+                //imagestring($image, 0, $width/0.4, $height-10, $coordonnes, $textcolor);
+                imagettftext($image, $width / 50, 0, $width, $height - 10, $textcolor, "./Herborn.ttf", $coordonnes);
+            }
+        }else{
+            $coordonnes = recup_geo_ville($nomFichier);
+            //echo($coordonnes);
+            if($width>$height){
+                //imagestring($image, 0, $width, $height-10, $coordonnes, $textcolor);
+                imagettftext($image, $width / 25, 0, $width, $height - 10, $textcolor, "./Herborn.ttf", $coordonnes);
+            }
+            else{
+                //imagestring($image, 0, $width/0.4, $height-10, $coordonnes, $textcolor);
+                imagettftext($image, $width / 50, 0, $width, $height - 10, $textcolor, "./Herborn.ttf", $coordonnes);
+            }
+        }
     }
 
     function date_copyright($image, $nomFichier){ // permet créer la date copyright
         $dataImg = getimagesize($_GET["lien"]);  
 		$width= $dataImg[0];
 		$height= $dataImg[1]; 
-        $verif = appartient2($nomFichier[2]);
+        $verif = appartient_date($nomFichier);
         if(empty($verif)){
-            $date = recup_date($nomFichier[2]);
-            $textcolor = imagecolorallocate($image, 0, 0, 255);
+            $date = recup_date($nomFichier);
+            $textcolor = imagecolorallocate($image, 255, 0, 0);
             if($width>$height){
-                imagettftext($image, $width / 50, 0, $width /1.4, $height - 10, imagecolorallocate($image, 255, 255, 255), "./Herborn.ttf",$date[0]["FileDateTime"]);
+                imagettftext($image, $width / 50, 0, $width /1.4, $height - 10, $textcolor, "./Herborn.ttf",$date);
             }
             else{
-                imagettftext($image, $height / 50, 0, $width /1.55, $height - 10, imagecolorallocate($image, 255, 255, 255), "./Herborn.ttf",$date[0]["FileDateTime"]);
+                imagettftext($image, $height / 50, 0, $width /1.55, $height - 10, $textcolor, "./Herborn.ttf",$date);
             }
-    /**
-     *  Le problème des miniatures qui ne s'affichent pas vient de imagettftext($image,) en gros la ressource est indéfinie 
-     */
         }else{
-            $date = recup_date_exif($nomFichier[2]);
-            $textcolor = imagecolorallocate($image, 0, 0, 255);
+            $date = recup_date_exif($nomFichier);
+            $textcolor = imagecolorallocate($image, 255, 255, 0);
             if($width>$height){
-                imagettftext($image, $width / 50, 0, $width /1.4, $height - 10, imagecolorallocate($image, 255, 255, 255), "./Herborn.ttf",$date[0]["DateTimeOriginal"]);
+                imagettftext($image, $width / 50, 0, $width /1.4, $height - 10, $textcolor, "./Herborn.ttf",$date);
             }
             else{
-                imagettftext($image, $height / 50, 0, $width /1.55, $height - 10, imagecolorallocate($image, 255, 255, 255), "./Herborn.ttf",$date[0]["DateTimeOriginal"]);
+                imagettftext($image, $height / 50, 0, $width /1.55, $height - 10, $textcolor, "./Herborn.ttf",$date);
             }
         }
     }
 
-    function traiterImage($image, $nomFichier){ // permet de mettre le logo et le texte copyright sur l'image
-        //coordonnees_copyright($image,$coordonnes);
+    function traiterImage($image, $nomFichier){ // permet de mettre la localisation et le texte copyright sur l'image
+        //echo $nomFichier;
+        geolocalisation_copyright($image,$nomFichier);
         date_copyright($image, $nomFichier);
     }
 
@@ -53,8 +72,9 @@
         $extension = strtolower(pathinfo($fichier, PATHINFO_EXTENSION));
         $valide = array('png', 'gif', 'jpeg');
         $nomFichier = explode("/", $fichier);
-
-        //header("Content-type: image/$extension");
+        //print_r($nomFichier);
+        
+       header("Content-type: image/$extension");
 
         if (in_array($extension, $valide))
         { 
@@ -77,11 +97,9 @@
                 break;
 
             }
-            // permet d'ajouter le copyright et le logo
-            if(isset($image)){
-                echo "empty";
-            }
-            traiterImage($image, $nomFichier);
+            // permet d'ajouter le copyright et la localisation
+            //echo $image;
+            traiterImage($image, $nomFichier[2]);
 
 
             switch($extension){

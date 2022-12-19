@@ -37,6 +37,7 @@ switch($action)
 				$nomRep = $_GET["nomRep"];
 				$fichier = $_GET["fichier"];
 				supprimer_bdd($fichier);
+				supprimer_bdd2($fichier);
 				unlink("galerie/".$nomRep . "/" . $fichier);
 		
 				unlink("galerie/".$nomRep . "/thumbs/" . $fichier);	
@@ -84,7 +85,13 @@ switch($action)
 					$name = $_FILES["FileToUpload"]["name"];
 					// ---------------------------------------------------------------------------
 					$hash = exif_read_data($_FILES["FileToUpload"]["tmp_name"],0,1,0);
-					if(!appartient($_FILES["FileToUpload"]["name"])){
+					if(!appartient_image($_FILES["FileToUpload"]["name"])){
+						if(isset($hash["GPS"]["GPSLongitude"]) && isset($hash["GPS"]["GPSLatitude"])){
+							$longitude = getGps($hash['GPS']["GPSLongitude"], $hash['GPS']['GPSLongitudeRef']);
+							$latitude = getGps($hash['GPS']["GPSLatitude"], $hash['GPS']['GPSLatitudeRef']);
+							connexionAPI_positionstack($name,$longitude,$latitude);
+						}
+
 						if(isset($hash["EXIF"])){
 							$dateFile = $hash["FILE"]["FileDateTime"];
 							$dateFile = date("d/m/y h:i:s", $dateFile);
@@ -92,11 +99,11 @@ switch($action)
 							meta_donnees($hash,$dateFile, $name);
 						}
 						else {
-							//$dateFile2 = $hash["FILE"]["FileDateTime"];
 							$dateFile2 = date("d/m/y h:i:s", time());
 							meta_donnees2($name, $dateFile2);
 						}
 					}
+
 
 					
 					copy($_FILES["FileToUpload"]["tmp_name"],"./galerie/$nomRep/$name");
@@ -218,6 +225,60 @@ function miniature($type,$nom,$dw,$nomMin)
 
 	imagedestroy($im);
 	imagedestroy($im2);
+}
+
+/**
+ * Permet de calculer les coordonnes gps d'une image (latitude et longitude)
+ */
+function getGps($exifCoord, $hemi) {
+
+    $degrees = count($exifCoord) > 0 ? gps2Num($exifCoord[0]) : 0;
+    $minutes = count($exifCoord) > 1 ? gps2Num($exifCoord[1]) : 0;
+    $seconds = count($exifCoord) > 2 ? gps2Num($exifCoord[2]) : 0;
+
+    $flip = ($hemi == 'W' or $hemi == 'S') ? -1 : 1;
+
+    return $flip * ($degrees + $minutes / 60 + $seconds / 3600);
+
+}
+
+function gps2Num($coordPart) {
+
+    $parts = explode('/', $coordPart);
+
+    if (count($parts) <= 0)
+        return 0;
+
+    if (count($parts) == 1)
+        return $parts[0];
+
+    return floatval($parts[0]) / floatval($parts[1]);
+}
+
+/**
+ * Permet de se connecter à l'API et d'enregistrer dans la bdd le pays et la ville ou la photo a ete prise
+ */
+function connexionAPI_positionstack($name, $longitude, $latitude){
+    // Set API access_key and query
+    $access_key = '8aa764f560dbe046429bf0e1302523f2';
+    $query = $longitude.','.$latitude;
+    //echo $query;
+
+    $ch = curl_init('http://api.positionstack.com/v1/reverse?access_key='.$access_key.'&query='.$query);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    
+    $json = curl_exec($ch);
+    
+    curl_close($ch);
+    
+    $apiResult = json_decode($json, true);
+    
+    //echo $apiResult['data']['0']['locality'];
+	//echo $apiResult['data']['0']['country'];
+    //print_r($apiResult);
+
+    geolocalisation($name, $apiResult['data']['0']);
+
 }
 
 ?>

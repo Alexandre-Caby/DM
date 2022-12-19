@@ -93,7 +93,7 @@ if (isset($_REQUEST["nomRep"]))  $nomRep = $_REQUEST["nomRep"];
 					$src = "";
 					$srcThumb = "";
 					
-					$verif = appartient2($fichier);
+					$verif = appartient_date($fichier);
 					if(empty($verif)){
 						$verif = recup_date_string($fichier);
 					}
@@ -101,7 +101,7 @@ if (isset($_REQUEST["nomRep"]))  $nomRep = $_REQUEST["nomRep"];
 					$src = "image.php?lien=galerie/$nomRep/$fichier";
 					$srcThumb = "image.php?lien=galerie/$nomRep/thumbs/$fichier";
 
-					echo "<a target=\"_blank\" href=\"$srcThumb\" class='img-fluid'><img src=\"$srcThumb\"/></a>\n";
+					echo "<a target=\"_blank\" href=\"$src\" class='img-fluid'><img src=\"$srcThumb\"/></a>\n";
 
 
 
@@ -137,6 +137,5 @@ if (isset($_REQUEST["nomRep"]))  $nomRep = $_REQUEST["nomRep"];
 
 	// afficher un message lorsque le répertoire est vide
 	if ($numImage==0) echo "<h3>Aucune image dans le répertoire</h3>";
-
 ?>
 

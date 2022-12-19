@@ -7,12 +7,12 @@ include_once("libs/SQL.php");
  */
 function recup_date_exif($name){
     $SQL=("SELECT DateTimeOriginal FROM Data_Exif WHERE Nom_image = '$name'");
-    return parcoursRs(SQLSelect($SQL));
+    return SQLGetChamp($SQL);
 }
 
 function recup_date($name){
     $SQL=("SELECT FileDateTime FROM Data_Exif WHERE Nom_image = '$name';");
-    return parcoursRs(SQLSelect($SQL));
+    return SQLGetChamp($SQL);
 }
 
 function recup_date_string($name){
@@ -21,7 +21,19 @@ function recup_date_string($name){
 }
 
 /**
- * Permet d'insérer dans la table Data_Exif les meta-donnees
+ * Récupère la localisation de la photo
+ */
+function recup_geo_ville($name){
+    $SQL=("SELECT Ville FROM Geolocalisation WHERE Nom_image = '$name';");
+    return SQLGetChamp($SQL);
+}
+function recup_geo_pays($name){
+    $SQL=("SELECT Pays FROM Geolocalisation WHERE Nom_image = '$name';");
+    return SQLGetChamp($SQL);
+}
+
+/**
+ * Permet d'insérer dans la table Data_Exif les metadonnees
  */
 function meta_donnees($exif,$date,$name){
     $SQL = "INSERT INTO Data_Exif (Nom_image, FileDateTime,ExposureTime, FNumber, ISOSpeedRatings, ExifVersion, DateTimeOriginal, DateTimeDigitized, 
@@ -44,9 +56,17 @@ function meta_donnees2($name, $dateFile){
 }
 
 /**
+ * Permet d'insérer dans la table Data_Exif le nom de l'image si les donnees exif n'existent pas
+ */
+function geolocalisation($name,$apiResult){
+    $SQL = "INSERT INTO Geolocalisation (Nom_image, Ville, Pays) VALUES ('$name', '$apiResult[locality]', '$apiResult[country]')";
+    return SQLInsert($SQL);
+}
+
+/**
  * Vérifie si l'image est déjà notée dans la base de donnée
  */
-function appartient($name){
+function appartient_image($name){
     $SQL = "SELECT Nom_image FROM Data_Exif WHERE Nom_image = '$name'";
     return SQLSelect($SQL);
 }
@@ -54,8 +74,16 @@ function appartient($name){
 /**
  * Vérifie si la date présente dans la base de donnée
  */
-function appartient2($name){
+function appartient_date($name){
     $SQL = "SELECT DateTimeOriginal FROM Data_Exif WHERE Nom_image = '$name'";
+    return SQLGetChamp($SQL);
+}
+
+/**
+ * Vérifie si la date présente dans la base de donnée
+ */
+function appartient_geo($name){
+    $SQL = "SELECT Ville FROM Geolocalisation WHERE Nom_image = '$name'";
     return SQLGetChamp($SQL);
 }
 
@@ -64,6 +92,14 @@ function appartient2($name){
  */
 function supprimer_bdd($name){
     $SQL = "DELETE FROM Data_Exif WHERE Nom_image = '$name'";
+    return SQLDelete($SQL);
+}
+
+/**
+ * Supprime la geolocalisation dans la base de donnée
+ */
+function supprimer_bdd2($name){
+    $SQL = "DELETE FROM Geolocalisation WHERE Nom_image = '$name'";
     return SQLDelete($SQL);
 }
 
