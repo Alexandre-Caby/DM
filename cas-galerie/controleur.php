@@ -56,19 +56,23 @@ switch($action)
 			{
 				$nomRep = $_GET["nomRep"];
 				$fichier = $_GET["fichier"];
+				$id = getId($fichier);
 				$nomFichier = $_GET["nomFichier"]; // nouveau nom 
+				
 
 				// renomme le fichier et sa miniature si elle existe
 				if (file_exists("./galerie/$nomRep/$fichier"))			
 					rename("./galerie/$nomRep/$fichier","./galerie/$nomRep/$nomFichier");
 
-				if (file_exists("./galerie/$nomRep/thumbs/$fichier"))			
+				if (file_exists("./galerie/$nomRep/thumbs/$fichier"))		
 					rename("./galerie/$nomRep/thumbs/$fichier","./galerie/$nomRep/thumbs/$nomFichier");
+
+				rennomer_bdd($nomFichier, $id);
 				
-			$tab = array(
-				"nomRep" => $nomRep
-			);
-			rediriger("index.php",$tab);
+				$tab = array(
+					"nomRep" => $nomRep
+				);
+				rediriger("index.php",$tab);
 			}
 		
 		break;
@@ -85,7 +89,7 @@ switch($action)
 					$name = $_FILES["FileToUpload"]["name"];
 					// ---------------------------------------------------------------------------
 					$hash = exif_read_data($_FILES["FileToUpload"]["tmp_name"],0,1,0);
-					if(!appartient_image($_FILES["FileToUpload"]["name"])){
+					if(!appartient_image($name)){
 						if(isset($hash["GPS"]["GPSLongitude"]) && isset($hash["GPS"]["GPSLatitude"])){
 							$longitude = getGps($hash['GPS']["GPSLongitude"], $hash['GPS']['GPSLongitudeRef']);
 							$latitude = getGps($hash['GPS']["GPSLatitude"], $hash['GPS']['GPSLatitudeRef']);
@@ -144,7 +148,8 @@ switch($action)
 					$rep = opendir("./galerie/$nomRep/thumbs"); 		// ouverture du repertoire 
 					while ( $fichier = readdir($rep))	// parcours tout le contenu de ce r�pertoire
 					{
-
+						supprimer_bdd($fichier);
+						supprimer_bdd2($fichier);
 						if (($fichier!=".") && ($fichier!=".."))
 						{
 							// Pour éliminer les autres r�pertoires du menu d�roulant, 

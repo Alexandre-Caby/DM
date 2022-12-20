@@ -22,6 +22,7 @@ if (isset($_REQUEST["nomRep"]))  $nomRep = $_REQUEST["nomRep"];
 	<form action="controleur.php" style="width:25%">
 	<label>Choisir un répertoire : </label>
 	<select name="nomRep" class="form-select form-select-sm" aria-label=".form-select-sm example">
+	<option value='' disabled selected>Selectionner le repertoire</option>
 </div>
 <?php
 	$rep = opendir("galerie/"); // ouverture du repertoire 
@@ -34,8 +35,10 @@ if (isset($_REQUEST["nomRep"]))  $nomRep = $_REQUEST["nomRep"];
 		{
 			// Pour éliminer les autres fichiers du menu déroulant, 
 			// on dispose de la fonction 'is_dir'
-			if (is_dir("galerie/" . $fichier))
+			if (is_dir("galerie/" . $fichier)){
 				printf("<option value=\"$fichier\">$fichier</option>");
+			}	
+
 		}
 	}
 	closedir($rep);

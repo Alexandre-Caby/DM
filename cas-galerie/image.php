@@ -8,28 +8,15 @@
 		$height= $dataImg[1]; 
         $textcolor = imagecolorallocate($image, 0, 0, 255);
         $verif = appartient_geo($nomFichier);
-        if(!empty($verif)){
+        //echo "$verif\n";
+        if(empty($verif)){
             $coordonnes = recup_geo_pays($nomFichier);
             //echo($coordonnes);
-            if($width>$height){
-                //imagestring($image, 0, $width, $height-10, $coordonnes, $textcolor);
-                imagettftext($image, $width / 25, 0, $width, $height - 10, $textcolor, "./Herborn.ttf", $coordonnes);
-            }
-            else{
-                //imagestring($image, 0, $width/0.4, $height-10, $coordonnes, $textcolor);
-                imagettftext($image, $width / 50, 0, $width, $height - 10, $textcolor, "./Herborn.ttf", $coordonnes);
-            }
+            imagettftext($image, $width / 50, 0, $width /20, $height - 10, $textcolor, "./Herborn.ttf",$coordonnes);
         }else{
             $coordonnes = recup_geo_ville($nomFichier);
             //echo($coordonnes);
-            if($width>$height){
-                //imagestring($image, 0, $width, $height-10, $coordonnes, $textcolor);
-                imagettftext($image, $width / 25, 0, $width, $height - 10, $textcolor, "./Herborn.ttf", $coordonnes);
-            }
-            else{
-                //imagestring($image, 0, $width/0.4, $height-10, $coordonnes, $textcolor);
-                imagettftext($image, $width / 50, 0, $width, $height - 10, $textcolor, "./Herborn.ttf", $coordonnes);
-            }
+            imagettftext($image, $width / 50, 0, $width /20, $height - 10, $textcolor, "./Herborn.ttf",$coordonnes);
         }
     }
 
@@ -41,21 +28,11 @@
         if(empty($verif)){
             $date = recup_date($nomFichier);
             $textcolor = imagecolorallocate($image, 255, 0, 0);
-            if($width>$height){
-                imagettftext($image, $width / 50, 0, $width /1.4, $height - 10, $textcolor, "./Herborn.ttf",$date);
-            }
-            else{
-                imagettftext($image, $height / 50, 0, $width /1.55, $height - 10, $textcolor, "./Herborn.ttf",$date);
-            }
+            imagettftext($image, $width / 50, 0, $width /1.4, $height - 10, $textcolor, "./Herborn.ttf",$date);
         }else{
             $date = recup_date_exif($nomFichier);
             $textcolor = imagecolorallocate($image, 255, 255, 0);
-            if($width>$height){
-                imagettftext($image, $width / 50, 0, $width /1.4, $height - 10, $textcolor, "./Herborn.ttf",$date);
-            }
-            else{
-                imagettftext($image, $height / 50, 0, $width /1.55, $height - 10, $textcolor, "./Herborn.ttf",$date);
-            }
+            imagettftext($image, $width / 50, 0, $width /1.4, $height - 10, $textcolor, "./Herborn.ttf",$date);            
         }
     }
 
@@ -69,12 +46,13 @@
     if(isset($_GET["lien"])){
 
         $fichier = $_GET["lien"];
+        //echo $fichier;
         $extension = strtolower(pathinfo($fichier, PATHINFO_EXTENSION));
         $valide = array('png', 'gif', 'jpeg');
         $nomFichier = explode("/", $fichier);
         //print_r($nomFichier);
-        
-       header("Content-type: image/$extension");
+
+       //header("Content-type: image/$extension");
 
         if (in_array($extension, $valide))
         { 

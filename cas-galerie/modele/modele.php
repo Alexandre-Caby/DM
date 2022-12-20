@@ -103,4 +103,14 @@ function supprimer_bdd2($name){
     return SQLDelete($SQL);
 }
 
+function getId($name){
+    $SQL = "SELECT ID FROM Data_Exif WHERE Nom_image = '$name'";
+    return SQLGetChamp($SQL); 
+}
+
+function rennomer_bdd($name, $id){
+    $SQL = "UPDATE Data_Exif SET Nom_image = '$name' WHERE ID='$id'";
+    return SQLUpdate($SQL);
+}
+
 ?>
